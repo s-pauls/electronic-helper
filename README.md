@@ -1,6 +1,15 @@
 # church-management
+Этот проект создан для поддержки организационных процессов в церкви
 
+Для работы с проктом нужно:
+- Скачать и установить [Python](https://www.python.org/downloads/)
+- Скачать и установить [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows)
+- Добавить переменную среды DJANGO_DEBUG со значением True 
 
+Для запуска проекта в терминале выполняем команду: 
+```
+python manage.py runserver
+```
 
 ## Getting started
 
