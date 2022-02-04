@@ -1,21 +1,68 @@
-# church-management
-Этот проект создан для поддержки организационных процессов в церкви
+# Church Management
+Этот проект создан для поддержки организационных процессов в церкви. 
+В проекте используется фреймворк [DJANGO](https://djbook.ru/rel3.0/).
+
+## Локальное разворачивание и запуск
 
 Для работы с проктом нужно:
-- Скачать и установить [Python](https://www.python.org/downloads/)
+- Скачать и установить [Python](https://www.python.org/ftp/python/3.7.4/python-3.7.4-amd64.exe) _(на хостинге используется версия 3.6.9)_
 - Скачать и установить [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows)
-- Добавить переменную среды DJANGO_DEBUG со значением True 
+- Создать файл .env в папке church_app со следующим содержимым
+```
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+DJANGO_SECRET_KEY=cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag
+```
 
 Для запуска проекта в терминале выполняем команду: 
+для перехода из папки church-management в папку, где есть manage.py - при первом запуске проекта
+```bash
+cd church_app
 ```
+
+запуск проекта
+```bash
 python manage.py runserver
 ```
 
-## Getting started
+для останова проекта достаточно в терминале нажать Ctrl+C
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Структура проекта
+Проект создан с помощью DJANGO 
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+```bash
+django-admin startproject church_app)
+``` 
+church_app - это корневая папка проекта
+
+В проект добален один Application - **main**
+```commandline
+python manage.py startapp main
+```
+в нем будем располагать нашу логику сайта и АПИ
+
+### Бизнес логика проекта
+Вся логика проекта должна находиться в пакете [core](church_app/main/core)
+
+### Презентационный уровень проекта
+Проет имеет несколько презентационных уровней
+- Веб-интерфейс [templates](church_app/main/templates)
+- АПИ [api](church_app/main/api)
+- Фоновые процессы [jobs](church_app/main/jobs)
+
+Все "головы" проекта используют бизнеслогику [core](church_app/main/core) для выполнения своих задач 
+
+## Используемые переменные среды:
+Тут перечисленны переменные и их описание, которые используются в проекте 
+
+| Переменная           | Описание                                               |
+|----------------------|--------------------------------------------------------|
+| DJANGO_DEBUG         | True/False - во время разработки нужно установить True |
+| DJANGO_ALLOWED_HOSTS | разрешенные хосты. *                                   |
+| DJANGO_SECRET_KEY    | секретный ключ, который нужен для шифрования cookie    |   
+| NOTION_TOKEN         | токен доступа к церковному Notion                      |
+
+---
 
 ## Add your files
 
