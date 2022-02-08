@@ -27,7 +27,7 @@ def message(request):
         logger.info('telegram sent message: ' + json.dumps(update))
         service.process_telegram_message(update)
     except Exception as e:
-        logger.error('telegram message was processed with error: ' + e)
+        logger.error(e)
         raise
 
     return HttpResponse(status=HTTPResponseCodes.OK)
