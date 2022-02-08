@@ -43,115 +43,144 @@ CONTACT = 'contact'
 # Constant for type Channel Post.
 CHANNEL_POST = 'channel_post'
 
+EDITED_CHANNEL_POST = 'edited_channel_post'
 
-class TelegramMessage:
+
+# https://core.telegram.org/bots/api#update
+class TelegramUpdate:
     def __init__(self, body):
         self._BODY = body
 
-    def get_text(self) -> str:
+    def get_message_text(self) -> str:
+
+        if self.is_message_object():
+            message = self.get_message_object()
+            return message.get('text')
 
         _type = self._get_type()
 
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['data']
 
-        if _type == CHANNEL_POST:
-            return self._BODY['channel_post']['text']
-
-        if _type == EDITED_MESSAGE:
-            return self._BODY['edited_message']['text']
-
-        return self._BODY['message']['text']
+        return None
 
     def get_first_name(self) -> str:
+
+        if self.is_message_object():
+            sender = self._get_message_sender()
+            if sender is None:
+                return None
+
+            return sender['first_name']
 
         _type = self._get_type()
 
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['from']['first_name']
 
-        if _type == CHANNEL_POST:
-            return self._BODY['channel_post']['from']['first_name']
-
-        if _type == EDITED_MESSAGE:
-            return self._BODY['edited_message']['from']['first_name']
-
-        return self._BODY['message']['from']['first_name']
+        return None
 
     def get_last_name(self) -> str:
+
+        if self.is_message_object():
+            sender = self._get_message_sender()
+            if sender is None:
+                return None
+
+            return sender['last_name']
 
         _type = self._get_type()
 
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['from']['last_name']
 
-        if _type == CHANNEL_POST:
-            return self._BODY['channel_post']['from']['last_name']
-
-        if _type == EDITED_MESSAGE:
-            return self._BODY['edited_message']['from']['last_name']
-
-        if _type == MESSAGE:
-            return self._BODY['message']['from']['last_name']
-
-        return ''
-
-    def get_user_id(self) -> int:
-
-        _type = self._get_type()
-        _result: str
-
-        if _type == CALLBACK_QUERY:
-            return int(self._BODY['callback_query']['from']['id'])
-
-        if _type == CHANNEL_POST:
-            return int(self._BODY['channel_post']['from']['id'])
-
-        if _type == EDITED_MESSAGE:
-            return int(self._BODY['edited_message']['from']['id'])
-
-        return int(self._BODY['message']['from']['id'])
-
-    def get_chat_id(self):
-
-        _type = self._get_type()
-
-        if _type == CALLBACK_QUERY:
-            return int(self._BODY['callback_query']['message']['chat']['id'])
-
-        if _type == CHANNEL_POST:
-            return int(self._BODY['channel_post']['chat']['id'])
-
-        if _type == EDITED_MESSAGE:
-            return int(self._BODY['edited_message']['chat']['id'])
-
-        if _type == INLINE_QUERY:
-            return int(self._BODY['inline_query']['from']['id'])
-
-        return int(self._BODY['message']['chat']['id'])
-
-    def message_from_group(self) -> bool:
-        if self._BODY['message']['chat']['type'] == 'private':
-            return False
-        return True
+        return None
 
     def get_user_name(self) -> str:
+
+        if self.is_message_object():
+            sender = self._get_message_sender()
+            if sender is None:
+                return None
+
+            return sender['username']
 
         _type = self._get_type()
 
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['from']['username']
 
-        if _type == CHANNEL_POST:
-            return self._BODY['channel_post']['from']['username']
+    def get_user_id(self) -> int:
+
+        if self.is_message_object():
+            sender = self._get_message_sender()
+            if sender is None:
+                return None
+
+            return sender['id']
+
+        _type = self._get_type()
+
+        if _type == CALLBACK_QUERY:
+            return int(self._BODY['callback_query']['from']['id'])
+
+        raise ValueError()
+
+    def get_chat_id(self) -> int:
+
+        if self.is_message_object():
+            chat = self._get_message_chat()
+            return chat['id']
+
+        _type = self._get_type()
+
+        if _type == INLINE_QUERY:
+            return int(self._BODY['inline_query']['from']['id'])
+
+        if _type == CALLBACK_QUERY:
+            return int(self._BODY['callback_query']['message']['chat']['id'])
+
+        raise ValueError()
+
+    def message_from_group(self) -> bool:
+        if self._BODY['message']['chat']['type'] == 'private':
+            return False
+        return True
+
+    def is_message_object(self) -> bool:
+        _type = self._get_type()
+        return _type in [MESSAGE, EDITED_MESSAGE, CHANNEL_POST, EDITED_CHANNEL_POST]
+
+    def get_message_object(self):
+
+        _type = self._get_type()
+
+        if _type == MESSAGE:
+            return self._BODY['message']
 
         if _type == EDITED_MESSAGE:
-            return self._BODY['edited_message']['from']['username']
+            return self._BODY['edited_message']
 
-        return self._BODY['message']['from']['username']
+        if _type == CHANNEL_POST:
+            return self._BODY['channel_post']
 
-    def get_location(self) -> str:
-        return self._BODY['message']['location']
+        if _type == EDITED_CHANNEL_POST:
+            return self._BODY['edited_channel_post']
+
+        raise ValueError()
+
+    def _get_message_sender(self):
+        # Sender of the message; empty for messages sent to channels.
+        message = self.get_message_object()
+        if  'from' in message:
+            return message.get('from')
+        else:
+            return None
+
+    def _get_message_chat(self):
+        # Sender of the message; empty for messages sent to channels.
+        message = self.get_message_object()
+        return message['chat']
 
     def _get_type(self):
 
@@ -199,5 +228,8 @@ class TelegramMessage:
 
         if self._BODY.get('channel_post') is not None:
             return CHANNEL_POST
+
+        if self._BODY.get('edited_channel_post') is not None:
+            return EDITED_CHANNEL_POST
 
         return None
