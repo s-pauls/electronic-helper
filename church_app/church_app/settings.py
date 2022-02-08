@@ -127,3 +127,79 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# https://djbook.ru/rel1.9/topics/logging.html
+# https://docs.djangoproject.com/en/4.0/howto/logging/#naming-loggers
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)-8s %(asctime)s module:s %(module)s proc: %(process)d thread: %(thread)d message: %(message)s',
+            'datefmt': "%d.%b %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s',
+            'datefmt': "%d.%b %H:%M:%S"
+        },
+    },
+    # По умолчанию все сообщения, прошедшие проверку уровня логгирования, будут переданы в обработчик.
+    # Добавив фильтры вы можете определить дополнительные правила проверки при обработке сообщений.
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    # Как и логгеры, обработчики имеют уровень логгирования.
+    # Если уровень логгирования сообщения ниже уровня логгирования обработчика, сообщение будет проигнорировано.
+    # Логгер может содержать несколько обработчиков, которые могут иметь различный уровень логгирования.
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+        'django-file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(os.getenv('DJANGO_LOG_DIRECTORY', BASE_DIR), 'django.log'),
+            'when': 'D',  # this specifies the interval
+            'interval': 1,  # defaults to 1, only necessary for other values
+            'backupCount': 10,  # how many backup file to keep, 10 days
+            'formatter': 'verbose',
+        },
+        'church-app-file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(os.getenv('DJANGO_LOG_DIRECTORY', BASE_DIR), 'main.log'),
+            'when': 'D',  # this specifies the interval
+            'interval': 1,  # defaults to 1, only necessary for other values
+            'backupCount': 10,  # how many backup file to keep, 10 days
+            'formatter': 'verbose'
+        },
+    },
+    # Когда сообщение передается в логгер, уровень логгирования сообщения сравнивается с уровнем логгирования логгера.
+    # Если уровень логгирования сообщения равен или выше уровню логгирования логгера, сообщение будет обработано, иначе - проигнорировано.
+    # После того, как логгер принял сообщение на обработку, оно передается в Handler(Обработчик).
+    'loggers': {
+        'django': {
+            'handlers': ['django-file'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['django-file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'main': {
+            'handlers': ['church-app-file', 'console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
+}
