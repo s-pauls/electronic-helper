@@ -22,9 +22,20 @@ class NotionPageBuilder:
         return page
 
     def add_title(self, name: str, value: str) -> None:
-        title_object = {name: {'title': [{'text': {'content': value}}]}}
+        title_object = {name: {'title': []}}
+        title_list = title_object[name]['title']
+        for line in value.splitlines():
+            title_list.append({'text': {'content': line}})
         properties = self._page.get('properties')
         properties.update(title_object)
+
+    def add_text(self, name: str, value: str) -> None:
+        rich_text_object = {name: {'rich_text': []}}
+        rich_text_list = rich_text_object[name]['rich_text']
+        for line in value.splitlines():
+            rich_text_list.append({'type': 'text', 'text': {'content': line}})
+        properties = self._page.get('properties')
+        properties.update(rich_text_object)
 
     def add_date(self, name: str, value: datetime) -> None:
         utc_now = pytz.utc.localize(value)
@@ -32,11 +43,6 @@ class NotionPageBuilder:
         date_object = {name: {'date': {'start': pst_now.isoformat()}}}
         properties = self._page.get('properties')
         properties.update(date_object)
-
-    def add_text(self, name: str, value: str) -> None:
-        rich_text_object = {name: {'rich_text': [{'type': 'text', 'text': {'content': value}}]}}
-        properties = self._page.get('properties')
-        properties.update(rich_text_object)
 
     def add_select(self, name: str, value: str) -> None:
         select_object = {name: {'select': {'name': value}}}
