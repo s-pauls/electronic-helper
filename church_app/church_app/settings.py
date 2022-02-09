@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'background_task',
 ]
 
 MIDDLEWARE = [
@@ -81,8 +82,12 @@ WSGI_APPLICATION = 'church_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_NAME'),
+        'USER': os.getenv('MYSQL_USER'),
+        'PASSWORD': os.getenv('MYSQL_PASS'),
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -182,6 +187,15 @@ LOGGING = {
             'backupCount': 10,  # how many backup file to keep, 10 days
             'formatter': 'verbose'
         },
+        'church-app-jobs-file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(os.getenv('DJANGO_LOG_DIRECTORY', BASE_DIR), 'main-jobs.log'),
+            'when': 'D',  # this specifies the interval
+            'interval': 1,  # defaults to 1, only necessary for other values
+            'backupCount': 10,  # how many backup file to keep, 10 days
+            'formatter': 'verbose'
+        },
     },
     # Когда сообщение передается в логгер, уровень логгирования сообщения сравнивается с уровнем логгирования логгера.
     # Если уровень логгирования сообщения равен или выше уровню логгирования логгера, сообщение будет обработано, иначе - проигнорировано.
@@ -199,6 +213,10 @@ LOGGING = {
         },
         'main': {
             'handlers': ['church-app-file', 'console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'main.jobs': {
+            'handlers': ['church-app-jobs-file'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         },
     },

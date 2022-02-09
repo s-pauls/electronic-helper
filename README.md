@@ -6,10 +6,14 @@
 
 Для работы с проктом нужно:
 - Скачать и установить [Python](https://www.python.org/ftp/python/3.7.4/python-3.7.4-amd64.exe) _(на хостинге используется версия 3.6.9)_ 
-  - ! при установке нужно включить галочку Add Python to environment variables !
+  - ! во время установки нужно включить галочку Add Python to environment variables !
 - Скачать и установить [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows)
+- Скачать и установить [MySql](https://dev.mysql.com/downloads/file/?id=510039)
+  - ! во время установки выбрать опцию Use Legacy Authentication Method (Retain MySQL 5.x Compatibility)
+    (на серевере используется MySQL 5.7)
+  - Создать схему в базе CREATE SCHEMA `church_management` DEFAULT CHARACTER SET utf8 ;
+  - Рекомендую использовать DBeaver вместо MySQL Workbanch для просмотра содержимого в базе
 - Создать файл .env в папке church_app со следующим содержимым
-- Создать папку logs для логов в папке church_app 
 ```
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
@@ -18,6 +22,14 @@ DJANGO_LOG_LEVEL=DEBUG
 DJANGO_LOG_DIRECTORY=logs
 NOTION_TOKEN=
 NOTION_RU_WORSHIP_TOKEN=
+MYSQL_NAME=church_management
+MYSQL_USER=root
+MYSQL_PASS=root
+```
+- Создать папку logs для логов в папке church_app
+- Для установки зависимостей запустить команду 
+```bash
+pip install -r requirements.txt
 ```
 
 Для запуска проекта в терминале выполняем команду: 
@@ -29,6 +41,13 @@ cd church_app
 запуск проекта
 ```bash
 python manage.py runserver
+```
+
+запуск фоновых задач 
+задачи должны быть добавлены в таблице background_task
+для добавдления (инициализации задач нужно вызвать [run_jobs()](church_app/main/tasks.py))
+```bash
+python manage.py process_tasks
 ```
 
 для останова проекта достаточно в терминале нажать Ctrl+C
@@ -61,15 +80,18 @@ python manage.py startapp main
 ## Используемые переменные среды:
 Тут перечисленны переменные и их описание, которые используются в проекте 
 
-| Переменная               | Описание                                                     |
-|--------------------------|--------------------------------------------------------------|
-| DJANGO_DEBUG             | True/False - во время разработки нужно установить True       |
-| DJANGO_ALLOWED_HOSTS     | разрешенные хосты. *                                         |
-| DJANGO_SECRET_KEY        | секретный ключ, который нужен для шифрования cookie          |   
-| DJANGO_LOG_LEVEL         | DEBUG, INFO, WARNING, ERROR, CRITICAL - уровень логгирования |
-| DJANGO_LOG_DIRECTORY     | Папка, куда будут писаться логи                              |
-| NOTION_TOKEN             | токен доступа к церковному Notion                            |
-| NOTION_RU_WORSHIP_TOKEN  | токен доступа к RuWorship Notion                             |
+| Переменная              | Описание                                                     |
+|-------------------------|--------------------------------------------------------------|
+| DJANGO_DEBUG            | True/False - во время разработки нужно установить True       |
+| DJANGO_ALLOWED_HOSTS    | разрешенные хосты. *                                         |
+| DJANGO_SECRET_KEY       | секретный ключ, который нужен для шифрования cookie          |   
+| DJANGO_LOG_LEVEL        | DEBUG, INFO, WARNING, ERROR, CRITICAL - уровень логгирования |
+| DJANGO_LOG_DIRECTORY    | Папка, куда будут писаться логи                              |
+| MYSQL_NAME              | Имя базы данных                                              |
+| MYSQL_USER              | Имя пользователя базы данных                                 |
+| MYSQL_PASS              | Пароль для доступа к базе данных                             |
+| NOTION_TOKEN            | токен доступа к церковному Notion                            |
+| NOTION_RU_WORSHIP_TOKEN | токен доступа к RuWorship Notion                             |
 
 ## Гит flow
 Основная ветка **main**. Из нее код попадает на хостинг (продакшн). Коммитить сразу в main запрещено. 
