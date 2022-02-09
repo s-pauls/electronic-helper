@@ -16,7 +16,6 @@ class TelegramUpdatesHandler:
         chat_id = update_wrapper.get_chat_id()
 
         if chat_id == TELEGRAM_RU_WORSHIP_CHAT_ID:
-            print('RU_WORSHIP_CHAT')
             ru_worship_service = RuWorshipService()
             ru_worship_service.process_telegram_message(telegram_update_object)
         else:
