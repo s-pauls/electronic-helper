@@ -1,14 +1,11 @@
 import json
 import logging
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .http_response_codes import HTTPResponseCodes
-from ..core.prayer_need.prayer_need_service import PrayerNeedService
-
-
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
+from ..core.telegram.telegram_updates_handler import TelegramUpdatesHandler
 
 
 # Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
@@ -21,11 +18,13 @@ def message(request):
     update_unicode = request.body.decode('utf-8')
     update = json.loads(update_unicode)
 
-    service = PrayerNeedService()
+    handler = TelegramUpdatesHandler()
+
+    logger = logging.getLogger(__name__)
 
     try:
-        logger.info('telegram sent message: ' + json.dumps(update))
-        service.process_telegram_message(update)
+        logger.info('telegram sent message: ' + json.dumps(update, cls=DjangoJSONEncoder))
+        handler.handle(update)
     except Exception as e:
         logger.error(e)
         raise

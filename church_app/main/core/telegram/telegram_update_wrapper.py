@@ -47,7 +47,7 @@ EDITED_CHANNEL_POST = 'edited_channel_post'
 
 
 # https://core.telegram.org/bots/api#update
-class TelegramUpdate:
+class TelegramUpdateWrapper:
     def __init__(self, body):
         self._BODY = body
 
@@ -62,14 +62,18 @@ class TelegramUpdate:
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['data']
 
-        return None
+        return ''
+
+    def get_message_caption(self) -> str:
+        message = self.get_message_object()
+        return message.get('caption', '')
 
     def get_first_name(self) -> str:
 
         if self.is_message_object():
             sender = self._get_message_sender()
             if sender is None:
-                return None
+                return ''
 
             return sender['first_name']
 
@@ -78,14 +82,14 @@ class TelegramUpdate:
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['from']['first_name']
 
-        return None
+        return ''
 
     def get_last_name(self) -> str:
 
         if self.is_message_object():
             sender = self._get_message_sender()
             if sender is None:
-                return None
+                return ''
 
             return sender['last_name']
 
@@ -94,14 +98,14 @@ class TelegramUpdate:
         if _type == CALLBACK_QUERY:
             return self._BODY['callback_query']['from']['last_name']
 
-        return None
+        return ''
 
     def get_user_name(self) -> str:
 
         if self.is_message_object():
             sender = self._get_message_sender()
             if sender is None:
-                return None
+                return ''
 
             return sender['username']
 
@@ -115,7 +119,7 @@ class TelegramUpdate:
         if self.is_message_object():
             sender = self._get_message_sender()
             if sender is None:
-                return None
+                raise ValueError()
 
             return sender['id']
 
@@ -151,6 +155,25 @@ class TelegramUpdate:
         _type = self._get_type()
         return _type in [MESSAGE, EDITED_MESSAGE, CHANNEL_POST, EDITED_CHANNEL_POST]
 
+    def is_message_contain_audio(self) -> bool:
+        _type = self._get_type()
+        return _type == AUDIO
+
+    # Optional. Original filename as defined by sender
+    def get_audio_filename(self) -> str:
+        message = self.get_message_object()
+        return message['audio'].get('file_name', '')
+
+    # Optional. MIME type of the file as defined by sender
+    def get_audio_mimetype(self) -> str:
+        message = self.get_message_object()
+        return message['audio'].get('mime_type', '')
+
+    # Optional. Performer of the audio as defined by sender or by audio tags
+    def get_audio_performer(self) -> str:
+        message = self.get_message_object()
+        return message['audio'].get('performer', '')
+
     def get_message_object(self):
 
         _type = self._get_type()
@@ -172,7 +195,7 @@ class TelegramUpdate:
     def _get_message_sender(self):
         # Sender of the message; empty for messages sent to channels.
         message = self.get_message_object()
-        if  'from' in message:
+        if 'from' in message:
             return message.get('from')
         else:
             return None
