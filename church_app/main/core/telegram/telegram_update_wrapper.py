@@ -53,7 +53,7 @@ class TelegramUpdateWrapper:
 
     def get_message_text(self) -> str:
 
-        if self.is_message_object():
+        if self.has_message_object():
             message = self.get_message_object()
             return message.get('text')
 
@@ -70,7 +70,7 @@ class TelegramUpdateWrapper:
 
     def get_first_name(self) -> str:
 
-        if self.is_message_object():
+        if self.has_message_object():
             sender = self._get_message_sender()
             if sender is None:
                 return ''
@@ -86,7 +86,7 @@ class TelegramUpdateWrapper:
 
     def get_last_name(self) -> str:
 
-        if self.is_message_object():
+        if self.has_message_object():
             sender = self._get_message_sender()
             if sender is None:
                 return ''
@@ -102,7 +102,7 @@ class TelegramUpdateWrapper:
 
     def get_user_name(self) -> str:
 
-        if self.is_message_object():
+        if self.has_message_object():
             sender = self._get_message_sender()
             if sender is None:
                 return ''
@@ -116,7 +116,7 @@ class TelegramUpdateWrapper:
 
     def get_user_id(self) -> int:
 
-        if self.is_message_object():
+        if self.has_message_object():
             sender = self._get_message_sender()
             if sender is None:
                 raise ValueError()
@@ -132,7 +132,7 @@ class TelegramUpdateWrapper:
 
     def get_chat_id(self) -> int:
 
-        if self.is_message_object():
+        if self.has_message_object():
             chat = self._get_message_chat()
             return chat['id']
 
@@ -150,10 +150,6 @@ class TelegramUpdateWrapper:
         if self._BODY['message']['chat']['type'] == 'private':
             return False
         return True
-
-    def is_message_object(self) -> bool:
-        _type = self._get_type()
-        return _type in [MESSAGE, EDITED_MESSAGE, CHANNEL_POST, EDITED_CHANNEL_POST]
 
     def is_message_contain_audio(self) -> bool:
         _type = self._get_type()
@@ -174,23 +170,26 @@ class TelegramUpdateWrapper:
         message = self.get_message_object()
         return message['audio'].get('performer', '')
 
+    def has_message_object(self) -> bool:
+        if self._BODY.get('message') is not None:
+            return True
+
+        if self._BODY.get('edited_message') is not None:
+            return True
+
+        if self._BODY.get('channel_post') is not None:
+            return True
+
+        if self._BODY.get('edited_channel_post') is not None:
+            return True
+
+        return False
+
     def get_message_object(self):
-
-        _type = self._get_type()
-
-        if _type == MESSAGE:
-            return self._BODY['message']
-
-        if _type == EDITED_MESSAGE:
-            return self._BODY['edited_message']
-
-        if _type == CHANNEL_POST:
-            return self._BODY['channel_post']
-
-        if _type == EDITED_CHANNEL_POST:
-            return self._BODY['edited_channel_post']
-
-        raise ValueError()
+        return self._BODY.get('message',
+                              self._BODY.get('edited_message',
+                                             self._BODY.get('channel_post',
+                                                            self._BODY.get('edited_channel_post'))))
 
     def _get_message_sender(self):
         # Sender of the message; empty for messages sent to channels.
