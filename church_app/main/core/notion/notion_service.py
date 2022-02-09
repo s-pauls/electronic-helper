@@ -1,61 +1,51 @@
+import datetime
 import os
 
-import pytz as pytz
-import json
-import datetime
 
 from .notion_client import NotionClient
+from .notion_page_builder import NotionPageBuilder
 
 
 class NotionService:
 
-    def send_prayer_need(sender_name: str, message_text: str, message_source: str):
-        prayers_database_id = 'c4dd9c96b8f94554bb9b020eda4e2667'  # Молитвенные нужды
-        utc_now = pytz.utc.localize(datetime.datetime.utcnow())
-        pst_now = utc_now.astimezone(pytz.timezone("Europe/Minsk"))
-        data = {
-            "parent": {
-                "database_id": prayers_database_id
-            },
-            "properties": {
-                "Дата": {
-                    "date": {
-                        "start": pst_now.isoformat()
-                    }
-                },
-                "Нужда": {
-                    "rich_text": [
-                        {
-                            "type": "text",
-                            "text": {
-                                "content": message_text
-                            }
-                        }
-                    ]
-                },
-                "Нуждающийся": {
-                    "title": [
-                        {
-                            "text": {
-                                "content": sender_name
-                            }
-                        }
-                    ]
-                },
-
-                "Источник": {
-                    "select": {
-                        "name": message_source
-                    }
-                }
-
-            }
-        }
+    def send_prayer_need(self, sender_name: str, message_text: str, message_source: str):
 
         notion_token = os.environ.get('NOTION_TOKEN')
 
-        if notion_token is None:
-            raise ValueError('notion_token is empty')
+        if not notion_token:
+            raise ValueError('NOTION_TOKEN is empty')
+
+        database_id = 'c4dd9c96b8f94554bb9b020eda4e2667'  # Молитвенные нужды
+
+        page_builder = NotionPageBuilder(database_id)
+        page_builder.add_date('Дата', datetime.datetime.utcnow())
+        page_builder.add_text('Нужда', message_text)
+        page_builder.add_title('Нуждающийся', sender_name)
+        page_builder.add_select('Источник', message_source)
+
+        page = page_builder.page
 
         notion_client = NotionClient(notion_token)
-        notion_client.send(json.dumps(data))
+        notion_client.send(page)
+
+    def send_rw_audio_record(self, sender_name: str, file_name: str, performer: str, message_source: str):
+
+        notion_token = os.environ.get('NOTION_RU_WORSHIP_TOKEN')
+
+        if not notion_token:
+            raise ValueError('NOTION_RU_WORSHIP_TOKEN is empty')
+
+        # база с записями песен, которые нужно валидировать для ruworship
+        database_id = '46a159b340204e8b9dfc2673d5bf2ab9'
+
+        page_builder = NotionPageBuilder(database_id)
+        page_builder.add_title('Название трека', file_name)
+        page_builder.add_text('Исполнитель', performer)
+        page_builder.add_select('Источник', message_source)
+        page_builder.add_text('Отправитель', sender_name)
+        page_builder.add_select('Статус обработки', 'необработан')
+
+        page = page_builder.page
+
+        notion_client = NotionClient(notion_token)
+        notion_client.send(page)

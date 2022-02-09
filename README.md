@@ -5,17 +5,23 @@
 ## Локальное разворачивание и запуск
 
 Для работы с проктом нужно:
-- Скачать и установить [Python](https://www.python.org/ftp/python/3.7.4/python-3.7.4-amd64.exe) _(на хостинге используется версия 3.6.9)_
+- Скачать и установить [Python](https://www.python.org/ftp/python/3.7.4/python-3.7.4-amd64.exe) _(на хостинге используется версия 3.6.9)_ 
+  - ! при установке нужно включить галочку Add Python to environment variables !
 - Скачать и установить [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows)
 - Создать файл .env в папке church_app со следующим содержимым
+- Создать папку logs для логов в папке church_app 
 ```
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
 DJANGO_SECRET_KEY=cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag
+DJANGO_LOG_LEVEL=DEBUG
+DJANGO_LOG_DIRECTORY=logs
+NOTION_TOKEN=
+NOTION_RU_WORSHIP_TOKEN=
 ```
 
 Для запуска проекта в терминале выполняем команду: 
-для перехода из папки church-management в папку, где есть manage.py - при первом запуске проекта
+для перехода из папки church-management в папку, где есть manage.py
 ```bash
 cd church_app
 ```
@@ -55,12 +61,28 @@ python manage.py startapp main
 ## Используемые переменные среды:
 Тут перечисленны переменные и их описание, которые используются в проекте 
 
-| Переменная           | Описание                                               |
-|----------------------|--------------------------------------------------------|
-| DJANGO_DEBUG         | True/False - во время разработки нужно установить True |
-| DJANGO_ALLOWED_HOSTS | разрешенные хосты. *                                   |
-| DJANGO_SECRET_KEY    | секретный ключ, который нужен для шифрования cookie    |   
-| NOTION_TOKEN         | токен доступа к церковному Notion                      |
+| Переменная               | Описание                                                     |
+|--------------------------|--------------------------------------------------------------|
+| DJANGO_DEBUG             | True/False - во время разработки нужно установить True       |
+| DJANGO_ALLOWED_HOSTS     | разрешенные хосты. *                                         |
+| DJANGO_SECRET_KEY        | секретный ключ, который нужен для шифрования cookie          |   
+| DJANGO_LOG_LEVEL         | DEBUG, INFO, WARNING, ERROR, CRITICAL - уровень логгирования |
+| DJANGO_LOG_DIRECTORY     | Папка, куда будут писаться логи                              |
+| NOTION_TOKEN             | токен доступа к церковному Notion                            |
+| NOTION_RU_WORSHIP_TOKEN  | токен доступа к RuWorship Notion                             |
+
+## Гит flow
+Основная ветка **main**. Из нее код попадает на хостинг (продакшн). Коммитить сразу в main запрещено. 
+Под каждую задачу нужно создавать отдельную ветку от **свежего**  main. 
+Когда код отлажен локально нужно push-нуть ее на gitlab и создать Merge Request (Запрос на объединение с main веткой). 
+Право объединения на текущий момент имеют пользователи с ролью Maintainer
+
+## Environment variables flow
+**В целях безопасности токены, пароли и другие важные параметры не должны быть в коде!**
+Решено хранить их в отдельном репозитории CONFIGURATION. При необходимости добавить новую настройку нужно:
+- добавить описание переменной в этот файл в секцию "Используемые переменные среды"
+- сообщить о необходимости добавления переменной в CONFIGURATION-репозиторий (просьбу о добавлении можно оставить прямо в описании Merge Request)
+
 
 ---
 
