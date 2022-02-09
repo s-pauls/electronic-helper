@@ -1,3 +1,5 @@
 class HTTPResponseCodes:
     OK = 200
     FORBIDDEN = 403
+    UNPROCESSABLE_ENTITY = 422
+    INTERNAL_SERVER_ERROR = 500

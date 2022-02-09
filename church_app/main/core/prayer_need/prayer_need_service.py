@@ -9,6 +9,9 @@ class PrayerNeedService:
 
         update = TelegramUpdateWrapper(telegram_update_object)
 
+        if not update.get_message_text():
+            return
+
         analyzer = PrayerNeedsTextAnalyzer(update.get_message_text())
 
         if analyzer.is_pray_need():
