@@ -20,11 +20,14 @@ DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
 DJANGO_SECRET_KEY=cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag
 DJANGO_LOG_LEVEL=DEBUG
 DJANGO_LOG_DIRECTORY=logs
-NOTION_TOKEN=
-NOTION_RU_WORSHIP_TOKEN=
 MYSQL_NAME=church_management
 MYSQL_USER=root
 MYSQL_PASS=root
+NOTION_TOKEN=
+NOTION_RU_WORSHIP_TOKEN=
+VK_RU_WORSHIP_TOKEN=
+VK_GOMEL_GRACE_LOGIN=
+VK_GOMEL_GRACE_PASSWORD=
 ```
 - Создать папку logs для логов в папке church_app
 - Для установки зависимостей запустить команду 
@@ -92,6 +95,9 @@ python manage.py startapp main
 | MYSQL_PASS              | Пароль для доступа к базе данных                             |
 | NOTION_TOKEN            | токен доступа к церковному Notion                            |
 | NOTION_RU_WORSHIP_TOKEN | токен доступа к RuWorship Notion                             |
+| VK_RU_WORSHIP_TOKEN     | токен доступа к RuWorship vk.com                             |
+| VK_GOMEL_GRACE_LOGIN    | номер телефона для входа в VK                                |
+| VK_GOMEL_GRACE_PASSWORD | пароль для входа в VK                                        |                                     
 
 ## Гит flow
 Основная ветка **main**. Из нее код попадает на хостинг (продакшн). Коммитить сразу в main запрещено. 
