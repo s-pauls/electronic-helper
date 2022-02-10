@@ -140,7 +140,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)-8s %(asctime)s module:s %(module)s proc: %(process)d thread: %(thread)d message: %(message)s',
+            'format': '%(levelname)-8s %(asctime)s module:s %(module)s proc: %(process)d thread: %(thread)d\n         %(message)s',
             'datefmt': "%d.%b %H:%M:%S"
         },
         'simple': {
@@ -218,6 +218,7 @@ LOGGING = {
         'main.jobs': {
             'handlers': ['church-app-jobs-file'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
         },
     },
 }
