@@ -4,6 +4,7 @@ from background_task.models import Task
 from .jobs.simple_job import SimpleJob
 
 
+# https://django-background-tasks.readthedocs.io/en/latest/#repeating-tasks
 def run_jobs():
     run_each_minute_jobs('', verbose_name='Each Minute Jobs', repeat=60, repeat_until=None)
     run_each_five_minute_jobs('', verbose_name='Each 5 Minute Jobs', repeat=60*5, repeat_until=None)
