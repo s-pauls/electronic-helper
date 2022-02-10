@@ -10,7 +10,7 @@ from ..core.telegram.telegram_updates_handler import TelegramUpdatesHandler
 
 # Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
 # containing a JSON-serialized Update
-@csrf_exempt
+@csrf_exempt  # https://www.dev2qa.com/how-to-enable-or-disable-csrf-validation-in-django-web-application/
 def message(request):
     if request.method != 'POST':
         return HttpResponse(status=HTTPResponseCodes.FORBIDDEN)
