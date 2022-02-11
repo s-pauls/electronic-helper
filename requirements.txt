@@ -4,4 +4,4 @@ requests==2.27.1
 beautifulsoup4==4.10.0
 django-background-tasks==1.2.5
 pytz==2021.3
-vk-api==11.9.7
+google-api-python-client==2.37.0

@@ -1,11 +1,10 @@
-
-
 from background_task import background
 from background_task.models import Task
 from django.utils import timezone
 
 from .jobs.ru_worship_three_songs import RuWorshipTheeSongs
 from .jobs.simple_job import SimpleJob
+from .jobs.youtube_active_broadcast_job import YouTubeActiveBroadcastJob
 
 
 # https://django-background-tasks.readthedocs.io/en/latest/#repeating-tasks
@@ -32,6 +31,9 @@ def run_each_minute_jobs(parameters):
     job = SimpleJob()
     job.run(parameters)
 
+    youtube_active_broadcast_job = YouTubeActiveBroadcastJob()
+    youtube_active_broadcast_job.run(parameters)
+
 
 @background(schedule=10)
 def run_each_five_minute_jobs(parameters):
@@ -53,4 +55,3 @@ def run_each_weak_jobs(parameters):
 def run_ru_worship_thee_songs_job(parameters):
     job = RuWorshipTheeSongs()
     job.run(parameters)
-
