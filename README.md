@@ -28,6 +28,10 @@ NOTION_RU_WORSHIP_TOKEN=
 VK_RU_WORSHIP_TOKEN=
 VK_GOMEL_GRACE_LOGIN=
 VK_GOMEL_GRACE_PASSWORD=
+TRELLO_API_KEY=
+TRELLO_API_SECRET=
+TRELLO_TOKEN=
+TRELLO_TOKEN_SECRET=
 ```
 - Создать папку logs для логов в папке church_app
 - Для установки зависимостей запустить команду 
@@ -83,21 +87,25 @@ python manage.py startapp main
 ## Используемые переменные среды:
 Тут перечисленны переменные и их описание, которые используются в проекте 
 
-| Переменная              | Описание                                                     |
-|-------------------------|--------------------------------------------------------------|
-| DJANGO_DEBUG            | True/False - во время разработки нужно установить True       |
-| DJANGO_ALLOWED_HOSTS    | разрешенные хосты. *                                         |
-| DJANGO_SECRET_KEY       | секретный ключ, который нужен для шифрования cookie          |   
-| DJANGO_LOG_LEVEL        | DEBUG, INFO, WARNING, ERROR, CRITICAL - уровень логгирования |
-| DJANGO_LOG_DIRECTORY    | Папка, куда будут писаться логи                              |
-| MYSQL_NAME              | Имя базы данных                                              |
-| MYSQL_USER              | Имя пользователя базы данных                                 |
-| MYSQL_PASS              | Пароль для доступа к базе данных                             |
-| NOTION_TOKEN            | токен доступа к церковному Notion                            |
-| NOTION_RU_WORSHIP_TOKEN | токен доступа к RuWorship Notion                             |
-| VK_RU_WORSHIP_TOKEN     | токен доступа к RuWorship vk.com                             |
-| VK_GOMEL_GRACE_LOGIN    | номер телефона для входа в VK                                |
-| VK_GOMEL_GRACE_PASSWORD | пароль для входа в VK                                        |                                     
+| Переменная               | Описание                                                     |
+|--------------------------|--------------------------------------------------------------|
+| DJANGO_DEBUG             | True/False - во время разработки нужно установить True       |
+| DJANGO_ALLOWED_HOSTS     | разрешенные хосты. *                                         |
+| DJANGO_SECRET_KEY        | секретный ключ, который нужен для шифрования cookie          |   
+| DJANGO_LOG_LEVEL         | DEBUG, INFO, WARNING, ERROR, CRITICAL - уровень логгирования |
+| DJANGO_LOG_DIRECTORY     | Папка, куда будут писаться логи                              |
+| MYSQL_NAME               | Имя базы данных                                              |
+| MYSQL_USER               | Имя пользователя базы данных                                 |
+| MYSQL_PASS               | Пароль для доступа к базе данных                             |
+| NOTION_TOKEN             | токен доступа к церковному Notion                            |
+| NOTION_RU_WORSHIP_TOKEN  | токен доступа к RuWorship Notion                             |
+| VK_RU_WORSHIP_TOKEN      | токен доступа к RuWorship vk.com                             |
+| VK_GOMEL_GRACE_LOGIN     | номер телефона для входа в VK                                |
+| VK_GOMEL_GRACE_PASSWORD  | пароль для входа в VK                                        |
+| TRELLO_API_KEY           | Секрет Trello                                                | 
+| TRELLO_API_SECRET        | Секрет Trello                                                |
+| TRELLO_TOKEN             | Секрет Trello                                                |
+| TRELLO_TOKEN_SECRET      | Секрет Trello                                                |
 
 ## Гит flow
 Основная ветка **main**. Из нее код попадает на хостинг (продакшн). Коммитить сразу в main запрещено. 
