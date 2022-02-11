@@ -29,7 +29,8 @@ def run_jobs():
 
 @background(schedule=5)
 def run_each_minute_jobs(parameters):
-    pass
+    job = SimpleJob()
+    job.run(parameters)
 
 
 @background(schedule=10)
