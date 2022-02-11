@@ -27,7 +27,7 @@ class YouTubeActiveBroadcastJob(JobBase):
         user_info = user_info_builder.user_info
 
         if not user_info.get('refresh_token'):
-            logger.info('Парамеры YouTube не заданы')
+            logger.info('YouTube\'s environment variables is not set ')
             return
 
         youtube = YouTubeResourceComposer(user_info).compose()
@@ -36,17 +36,17 @@ class YouTubeActiveBroadcastJob(JobBase):
         active_live_broadcast = youtube_service.get_active_live_broadcast(youtube)
 
         if not active_live_broadcast:
-            logger.info('Нет активной трансляции')
+            logger.info('No active broadcast')
             return
 
         broadcast_wrapper = YouTubeBroadcastWrapper(active_live_broadcast)
 
-        logger.info(f"Текущая трансляция {broadcast_wrapper.get_title()}")
+        logger.info(f"Current broadcast {broadcast_wrapper.get_title()}")
 
         live_chat_messages = youtube_service.get_live_chat_messages(youtube, broadcast_wrapper.get_live_chat_id())
 
         live_chat_messages_wrapper = YouTubeLiveChatMessagesWrapper(live_chat_messages)
 
         if not live_chat_messages_wrapper.has_messages():
-            logger.info('Нет сообщений')
+            logger.info('No messages')
             return

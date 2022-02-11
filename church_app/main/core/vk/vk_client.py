@@ -35,7 +35,7 @@ class VkClient:
             'is_loading_all': 1
         }
 
-        response = session.http.post(
+        response = session.post(
             'https://m.vk.com/audio',
             data=data,
             allow_redirects=False
