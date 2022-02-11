@@ -144,8 +144,7 @@ LOGGING = {
             'datefmt': "%d.%b %H:%M:%S"
         },
         'simple': {
-            'format': '%(levelname)s %(asctime)s %(message)s',
-            'datefmt': "%d.%b %H:%M:%S"
+            'format': '%(levelname)s %(asctime)s %(message)s'
         },
     },
     # По умолчанию все сообщения, прошедшие проверку уровня логгирования, будут переданы в обработчик.

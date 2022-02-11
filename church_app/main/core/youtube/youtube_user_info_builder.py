@@ -8,7 +8,7 @@ class YouTubeUserInfoBuilder:
         self._user_info = dict(refresh_token='', client_id='', client_secret='')
 
     @property
-    def user_info(self):
+    def user_info(self) -> dict:
         user_info = self._user_info
         self.reset()
         return user_info
