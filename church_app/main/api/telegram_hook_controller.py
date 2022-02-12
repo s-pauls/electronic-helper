@@ -26,7 +26,7 @@ def message(request):
         logger.info('telegram sent message: ' + json.dumps(update, cls=DjangoJSONEncoder))
         handler.handle(update)
     except Exception as e:
-        logger.error(e)
+        logger.exception(e)
         raise
 
     return HttpResponse(status=HTTPResponseCodes.OK)

@@ -2,11 +2,12 @@ import json
 
 import requests
 
-from ...utilities.custom_errors import CustomException
-
 
 # https://www.notion.so/help/add-and-manage-integrations-with-the-api
 # Смотри раздел Add integrations to pages для включения интеграции в базе ноушина
+from ..utilities.custom_errors import CustomException
+
+
 class NotionClient:
     def __init__(self, notion_token: str):
         self._token = notion_token
