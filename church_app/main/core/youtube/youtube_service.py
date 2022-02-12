@@ -1,3 +1,7 @@
+from datetime import datetime
+from ...models import YouTubeBroadcastsDb
+
+
 class YouTubeService:
 
     # https://cf57722.tmweb.ru/helpers/youtube_auth_response.php
@@ -28,3 +32,54 @@ class YouTubeService:
         )
         response = request.execute()
         return response
+
+    def insert_live_chat_message(self, youtube, live_chat_id: str, message_text: str):
+        request = youtube.liveChatMessages().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "liveChatId": live_chat_id,
+                    "type": "textMessageEvent",
+                    "textMessageDetails": {
+                        "messageText": message_text
+                    }
+                }
+            }
+        )
+        response = request.execute()
+
+    def add_new_live_broadcast_in_db(self, youtube_id: str, youtube_title: str,
+                                live_chat_id: str,
+                                scheduled_start_time : datetime,
+                                broadcast_status: str = 'active'):
+        row = YouTubeBroadcastsDb(
+            youtube_id=youtube_id,
+            youtube_title=youtube_title,
+            status=broadcast_status,
+            live_chat_id=live_chat_id,
+            create_datetime=datetime.utcnow(),
+            scheduled_start_time=scheduled_start_time
+        )
+
+        row.save()
+
+    def get_active_live_broadcast_from_db(self) -> YouTubeBroadcastsDb:
+        rows = list(YouTubeBroadcastsDb.objects.filter(status='active').order_by('-create_datetime'))
+        if len(rows) > 0:
+            return rows[0]
+        else:
+            return None
+
+    def get_live_broadcast_by_youtube_id_from_db(self, youtube_id: str) -> YouTubeBroadcastsDb:
+        return YouTubeBroadcastsDb.objects.get(youtube_id=youtube_id)
+
+
+    def set_live_broadcast_finished(self, youtube_id: str):
+        row = YouTubeBroadcastsDb.objects.get(youtube_id=youtube_id)
+        row.status = 'finished'
+        row.save()
+
+    def set_live_broadcast_page_token(self, youtube_id: str, page_token: str):
+        row = YouTubeBroadcastsDb.objects.get(youtube_id=youtube_id)
+        row.live_chat_next_page_token = page_token
+        row.save()

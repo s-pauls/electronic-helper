@@ -1,6 +1,6 @@
 import requests
 
-from ...utilities.custom_errors import CustomException
+from ..utilities.custom_errors import CustomException
 
 
 class VkClient:

@@ -1,33 +1,17 @@
-import os
+import pytz
+from datetime import datetime, timedelta
 from typing import Optional
-
-from trello import TrelloClient, Board, Card
+from trello import Board, Card
+from .trello_composer import TrelloComposer
 
 TRELLO_BOARD_YOUTUBE_SERVICE = '6203cd73c8dd867e5a13b868'
 
 
 class TrelloService:
 
-    def sample(self):
-        client = TrelloClient(
-            api_key=os.getenv('TRELLO_API_KEY'),
-            api_secret=os.getenv('TRELLO_API_SECRET'),
-            token=os.getenv('TRELLO_TOKEN'),
-            token_secret=os.getenv('TRELLO_TOKEN_SECRET')
-        )
+    def create_new_preaching_card(self, youtube_title: str, youtube_url: str):
 
-        to_do_list_id = '6203cd73c8dd867e5a13b869'
-        try:
-            self.create_new_preaching_card(
-                client=client,
-                list_id=to_do_list_id,
-                preaching_name='03.012.12 | воскресное служение',  # todo
-                preaching_url='https://www.youtube.com/watch?v=hAIE8VOB4pM&list=RDMMhAIE8VOB4pM&start_radio=1'
-            )
-        except Exception as e:
-            print(e)
-
-    def create_new_preaching_card(self, client: TrelloClient, list_id: str, preaching_name: str, preaching_url: str):
+        client = TrelloComposer().compose()
 
         youtube_board = client.get_board(TRELLO_BOARD_YOUTUBE_SERVICE)
 
@@ -36,12 +20,40 @@ class TrelloService:
         if template_card is None:
             return
 
-        board_list = youtube_board.get_list(list_id)
+        to_do_list_id = '6203cd73c8dd867e5a13b869'
+        board_list = youtube_board.get_list(to_do_list_id)
 
         board_list.add_card(
-            name=f"Трансляция завершена. Опубликовать проповедь {preaching_name}",
-            desc=str.replace(template_card.desc, "{youtube-url}", preaching_url),
+            name=f"Опубликовать проповедь. Трансляция {youtube_title}",
+            desc=str.replace(template_card.desc, "{youtube-url}", youtube_url),
             source=template_card.id,
+            position='top'
+        )
+
+    def create_update_youtube_description_card(self, youtube_title: str, youtube_url: str):
+
+        client = TrelloComposer().compose()
+
+        youtube_board = client.get_board(TRELLO_BOARD_YOUTUBE_SERVICE)
+
+        template_card = self.get_first_template_card(youtube_board, 'Template[update_broadcast_description]')
+
+        if template_card is None:
+            return
+
+        to_do_list_id = '6203cd73c8dd867e5a13b869'
+        board_list = youtube_board.get_list(to_do_list_id)
+
+        tz = pytz.timezone('Europe/Minsk')
+        today = datetime.now(tz=tz)
+        start_of_day = today.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_day = start_of_day + timedelta(1)
+
+        board_list.add_card(
+            name=f"Обновить тайм-коды. Трансляция {youtube_title}",
+            desc=str.replace(template_card.desc, "{youtube-url}", youtube_url),
+            source=template_card.id,
+            due=end_of_day.isoformat(),
             position='top'
         )
 

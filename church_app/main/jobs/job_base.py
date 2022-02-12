@@ -19,9 +19,5 @@ class JobBase(metaclass=abc.ABCMeta):
             logger.info(f'Job {self._job_name} begin')
             self.execute(parameters)
             logger.info(f'Job {self._job_name} finish')
-        except Exception as exception:
-            logger.error(f'Job {self._job_name} has error: ' + exception.__str__())
-
-
-
-
+        except Exception:
+            logger.exception(f'Job {self._job_name} has error: ')

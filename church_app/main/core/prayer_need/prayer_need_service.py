@@ -6,6 +6,7 @@ from ..telegram.telegram_update_wrapper import TelegramUpdateWrapper
 TELEGRAM_FROM_VIBER_CHAT_ID = -1001681319252
 TELEGRAM_FROM_VIBER_CHAT_NAME = 'Благодать (Гомель)'
 
+
 class PrayerNeedService:
 
     def process_telegram_message(self, telegram_update_object):
@@ -28,9 +29,13 @@ class PrayerNeedService:
             sender_name = parser.get_sender_name()
             message_text = parser.get_message_text()
 
+        self.process_message(sender_name, message_text, 'telegram')
+
+    def process_message(self, sender_name: str, message_text: str, message_source: str):
+
         analyzer = PrayerNeedsTextAnalyzer(message_text)
 
         if analyzer.is_pray_need():
             notion_service = NotionService()
 
-            notion_service.send_prayer_need(sender_name, message_text, 'telegram')
+            notion_service.send_prayer_need(sender_name, message_text, message_source)
