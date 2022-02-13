@@ -1,4 +1,5 @@
 from datetime import datetime
+from ..utilities import datetime_helper
 from ...models import YouTubeBroadcastsDb
 
 
@@ -57,8 +58,8 @@ class YouTubeService:
             youtube_title=youtube_title,
             status=broadcast_status,
             live_chat_id=live_chat_id,
-            create_datetime=datetime.utcnow(),
-            scheduled_start_time=scheduled_start_time
+            create_datetime=datetime_helper.now_with_utc_timezone(),
+            scheduled_start_time=datetime_helper.add_utc_time_zone(scheduled_start_time)
         )
 
         row.save()
