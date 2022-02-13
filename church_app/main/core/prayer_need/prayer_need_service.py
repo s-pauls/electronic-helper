@@ -9,6 +9,9 @@ TELEGRAM_FROM_VIBER_CHAT_NAME = 'Благодать (Гомель)'
 
 class PrayerNeedService:
 
+    def __init__(self):
+        self._notion_service = NotionService()
+
     def process_telegram_message(self, telegram_update_object):
 
         update = TelegramUpdateWrapper(telegram_update_object)
@@ -31,11 +34,13 @@ class PrayerNeedService:
 
         self.process_message(sender_name, message_text, 'telegram')
 
-    def process_message(self, sender_name: str, message_text: str, message_source: str):
+    def process_message(self, sender_name: str, message_text: str, message_source: str) -> bool:
 
         analyzer = PrayerNeedsTextAnalyzer(message_text)
 
         if analyzer.is_pray_need():
-            notion_service = NotionService()
+            self._notion_service.send_prayer_need(sender_name, message_text, message_source)
 
-            notion_service.send_prayer_need(sender_name, message_text, message_source)
+            return True
+
+        return False
