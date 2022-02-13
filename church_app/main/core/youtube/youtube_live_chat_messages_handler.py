@@ -3,9 +3,9 @@ import logging
 from .youtube_live_chat_message_wrapper import YouTubeLiveChatMessageWrapper
 from .youtube_service import YouTubeService
 from ..prayer_need.prayer_need_service import PrayerNeedService
+from ..utilities import datetime_helper
 from ..utilities.handler_base import HandlerBase
 
-SUNDAY = 7
 
 """
 В этот обработчик приходят паки сообщений.
@@ -39,7 +39,7 @@ class YouTubeLiveChatMessagesHandler(HandlerBase):
             self.logger.error(f'broadcast with youtube_id: {youtube_id} not found in database')
             return
 
-        if broadcast.scheduled_start_time.isoweekday() == SUNDAY:
+        if datetime_helper.is_sunday(broadcast.scheduled_start_time):
             self.logger.info(f'{broadcast.youtube_id} is Sunday broadcast. New Message\'s batch is processing...')
             self.process_sunday_messages(messages)
 

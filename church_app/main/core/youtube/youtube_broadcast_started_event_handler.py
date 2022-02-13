@@ -4,10 +4,9 @@ from background_task import background
 
 from .youtube_composer import YouTubeResourceComposer
 from .youtube_service import YouTubeService
+from ..utilities import datetime_helper
 from ..utilities.handler_base import HandlerBase
 
-
-SUNDAY = 7
 
 # Отложенный запуск обработки начала трансляции
 # https://django-background-tasks.readthedocs.io/en/latest/#creating-and-registering-tasks
@@ -45,7 +44,7 @@ class YouTubeBroadcastStartedEventHandler(HandlerBase):
             self.logger.error(f'broadcast with youtube_id: {youtube_id} not found in database')
             return
 
-        if broadcast.scheduled_start_time.isoweekday() == SUNDAY:
+        if datetime_helper.is_sunday(broadcast.scheduled_start_time):
             self._youtube_service.insert_live_chat_message(
                 youtube=youtube,
                 live_chat_id=broadcast.live_chat_id,

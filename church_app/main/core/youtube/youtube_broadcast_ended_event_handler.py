@@ -4,8 +4,9 @@ from background_task import background
 from .youtube_service import YouTubeService
 from ..trello.trello_service import TrelloService
 from ..utilities.handler_base import HandlerBase
+from ..utilities import datetime_helper
 
-SUNDAY = 7
+
 
 # Отложенный запуск обработки начала трансляции (5 мин)
 # https://django-background-tasks.readthedocs.io/en/latest/#creating-and-registering-tasks
@@ -38,7 +39,7 @@ class YouTubeBroadcastEndedEventHandler(HandlerBase):
             self.logger.error(f'broadcast with youtube_id: {youtube_id} not found in database')
             return
 
-        if broadcast.scheduled_start_time.isoweekday() == SUNDAY:
+        if datetime_helper.is_sunday(broadcast.scheduled_start_time):
             self._trello_service.create_new_preaching_card(
                 youtube_title=broadcast.youtube_title,
                 youtube_url=f'https://youtu.be/{broadcast.youtube_id}'
