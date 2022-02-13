@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from church_app.main.core.utilities import datetime_helper
+from ..utilities import datetime_helper
 
 
 class YouTubeBroadcastWrapper:
