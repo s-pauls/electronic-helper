@@ -4,6 +4,7 @@ from ..ruworship.ruworship_service import RuWorshipService
 
 TELEGRAM_RU_WORSHIP_CHAT_ID = -1001764905737
 
+
 class TelegramUpdatesHandler:
 
     def handle(self, telegram_update_object):

@@ -51,6 +51,14 @@ class TelegramUpdateWrapper:
     def __init__(self, body):
         self._BODY = body
 
+    def get_message_id(self) -> int:
+
+        if self.has_message_object():
+            message = self.get_message_object()
+            return message.get('message_id')
+
+        raise ValueError()
+
     def get_message_text(self) -> str:
 
         if self.has_message_object():
