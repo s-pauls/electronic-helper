@@ -24,25 +24,24 @@ class YouTubeActiveBroadcastJob(JobBase):
 
     def __init__(self):
         super().__init__(self.__class__.__name__.__str__())
+        self._logger = logging.getLogger(__name__)
+        self._youtube_service = YouTubeService()
 
     def execute(self, parameters):
-        logger = logging.getLogger(__name__)
-
         youtube = YouTubeResourceComposer().compose()
-        youtube_service = YouTubeService()
 
-        active_live_broadcast = youtube_service.get_active_live_broadcast(youtube)
+        active_live_broadcast = self._youtube_service.get_active_live_broadcast(youtube)
         active_live_broadcast_wrapper = YouTubeBroadcastWrapper(active_live_broadcast)
 
-        active_live_broadcast_in_db = youtube_service.get_active_live_broadcast_from_db()
+        active_live_broadcast_in_db = self._youtube_service.get_active_live_broadcast_from_db()
 
         if not active_live_broadcast:
-            logger.info('No active broadcast')
+            self._logger.debug('No active broadcast')
 
             if active_live_broadcast_in_db:
-                logger.info(f"Live broadcast {active_live_broadcast_in_db.youtube_id} finished")
+                self._logger.debug(f"Live broadcast {active_live_broadcast_in_db.youtube_id} finished")
 
-                youtube_service.set_live_broadcast_finished(active_live_broadcast_in_db.youtube_id)
+                self._youtube_service.set_live_broadcast_finished(active_live_broadcast_in_db.youtube_id)
 
                 # отложенный запуск обработки окончания трансляции
                 run_delayed_broadcast_ended(active_live_broadcast_in_db.youtube_id, schedule=timedelta(minutes=2))
@@ -52,9 +51,9 @@ class YouTubeActiveBroadcastJob(JobBase):
             return
 
         if not active_live_broadcast_in_db:
-            logger.info(f"New live broadcast {active_live_broadcast_wrapper.get_id()} started")
+            self._logger.debug(f"New live broadcast {active_live_broadcast_wrapper.get_id()} started")
 
-            youtube_service.add_new_live_broadcast_in_db(
+            self._youtube_service.add_new_live_broadcast_in_db(
                 youtube_id=active_live_broadcast_wrapper.get_id(),
                 youtube_title=active_live_broadcast_wrapper.get_title(),
                 live_chat_id=active_live_broadcast_wrapper.get_live_chat_id(),
@@ -66,7 +65,7 @@ class YouTubeActiveBroadcastJob(JobBase):
 
             return
 
-        live_chat_messages = youtube_service.get_live_chat_messages(
+        live_chat_messages = self._youtube_service.get_live_chat_messages(
             youtube=youtube,
             live_chat_id=active_live_broadcast_wrapper.get_live_chat_id(),
             page_token=active_live_broadcast_in_db.live_chat_next_page_token
@@ -74,13 +73,13 @@ class YouTubeActiveBroadcastJob(JobBase):
 
         live_chat_messages_wrapper = YouTubeLiveChatMessagesWrapper(live_chat_messages)
 
-        youtube_service.set_live_broadcast_page_token(
+        self._youtube_service.set_live_broadcast_page_token(
             youtube_id=active_live_broadcast_wrapper.get_id(),
             page_token=live_chat_messages_wrapper.get_next_page_token()
         )
 
         if not live_chat_messages_wrapper.has_messages():
-            logger.info('No messages')
+            self._logger.debug('No messages')
             return
 
         messages_handler = YouTubeLiveChatMessagesHandler()

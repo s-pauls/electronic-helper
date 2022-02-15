@@ -19,3 +19,7 @@ class YouTubeBroadcastWrapper:
     def get_scheduled_start_time(self) -> datetime:
         date_str = self._broadcast.get('snippet', {}).get('scheduledStartTime')
         return datetime_helper.youtube_datetime_to_datetime(date_str)
+
+    def has_scheduled_start_time(self) -> bool:
+        date_str = self._broadcast.get('snippet', {}).get('scheduledStartTime')
+        return date_str

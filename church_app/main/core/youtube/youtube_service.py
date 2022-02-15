@@ -25,6 +25,17 @@ class YouTubeService:
         else:
             return None
 
+    # Возвращает список запланированных трансляций от ближайшей 5 шт. (по умолчанию)
+    def get_upcoming_live_broadcast(self, youtube):
+        request = youtube.liveBroadcasts().list(
+            part="id,snippet",
+            broadcastStatus="upcoming",
+            broadcastType="event"
+        )
+        response = request.execute()
+        items = list(response['items'])
+        return items
+
     def get_live_chat_messages(self, youtube, live_chat_id: str, page_token: str = None):
         request = youtube.liveChatMessages().list(
             liveChatId=live_chat_id,
