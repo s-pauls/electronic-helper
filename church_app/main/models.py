@@ -21,3 +21,24 @@ class YouTubeBroadcastsDb(models.Model):
         indexes = [
             models.Index(fields=['youtube_id'])
         ]
+
+
+class SubscriberDb(models.Model):
+    user_id = models.CharField("User ID", max_length=100)
+    user_name = models.CharField("User Name", max_length=200)
+    user_avatar = models.CharField("User Avatar", max_length=500)
+    user_language = models.CharField("User Language", max_length=5)
+    subscribed_to = models.CharField("Subscribed To", max_length=20)
+    subscription_status = models.CharField("Subscription Status", max_length=20)
+
+    def __str__(self):
+        return self.user_name
+
+    class Meta:
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
+        indexes = [
+            models.Index(fields=['user_id']),
+            models.Index(fields=['subscribed_to']),
+            models.Index(fields=['subscription_status']),
+        ]

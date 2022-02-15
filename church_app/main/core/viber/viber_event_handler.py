@@ -42,11 +42,20 @@ class ViberEventHandler:
                # 'thumbnail': 'http://www.images.com/thumb.jpg'
             }
 
+            self._viber_service.save_subscriber_into_db(
+                user_id=viber_user_wrapper.get_user_id(),
+                user_name=viber_user_wrapper.get_user_name(),
+                user_avatar=viber_user_wrapper.get_user_avatar(),
+                user_language=viber_user_wrapper.get_user_language(),
+            )
+
             return welcome_message
 
         if event_name == 'message':
 
             viber_event_wrapper = ViberEventWrapper(viber_event)
+
+            self._viber_service.set_subscribed_status(viber_event_wrapper.get_sender_id())
 
             if viber_event_wrapper.get_message_type() == 'text':
                 self._prayer_need_service.process_message(
@@ -56,4 +65,19 @@ class ViberEventHandler:
                     message_source='viber'
                 )
             return None
+
+        # почему-то subscribed не возникает на первом сообщении, хотя первое сообщение означает,
+        # что пользователь подписался
+        if event_name == 'subscribed':
+
+            viber_user_wrapper = ViberUserWrapper(viber_event['user'])
+            self._viber_service.set_subscribed_status(viber_user_wrapper.get_user_id())
+            return None
+
+        if event_name == 'unsubscribed':
+
+            self._viber_service.set_unsubscribed_status(viber_event['user_id'])
+            return None
+
+
 
