@@ -6,7 +6,7 @@ class ViberAccountInfoWrapper:
         return self._info['status_message']
 
     def get_subscribers_count(self) -> int:
-        count_str = self._info['subscribers_count']
+        count_str = self._info.get('subscribers_count')
         return int(count_str)
 
     def get_members(self) -> list:
