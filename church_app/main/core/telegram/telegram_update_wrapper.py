@@ -55,7 +55,7 @@ class TelegramUpdateWrapper:
 
         if self.has_message_object():
             message = self.get_message_object()
-            return message.get('message_id')
+            return int(message.get('message_id'))
 
         raise ValueError()
 
@@ -129,7 +129,7 @@ class TelegramUpdateWrapper:
             if sender is None:
                 raise ValueError()
 
-            return sender['id']
+            return int(sender['id'])
 
         _type = self._get_type()
 
@@ -142,7 +142,7 @@ class TelegramUpdateWrapper:
 
         if self.has_message_object():
             chat = self._get_message_chat()
-            return chat['id']
+            return int(chat['id'])
 
         _type = self._get_type()
 
