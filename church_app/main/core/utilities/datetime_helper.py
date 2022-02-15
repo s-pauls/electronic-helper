@@ -19,5 +19,5 @@ def is_sunday(dt: datetime) -> bool:
 
 def youtube_datetime_to_datetime(dt_str: str) -> datetime:
     # youtube date format: '2022-02-13T07:00:24Z'
-    dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ')
+    dt = datetime.strptime(dt_str.replace('Z', '+00:00'), '%Y-%m-%dT%H:%M:%S%z')
     return add_utc_time_zone(dt)

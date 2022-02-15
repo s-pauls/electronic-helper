@@ -20,9 +20,20 @@ def viber_event(request):
         logger.info('viber sent event: ' + json.dumps(event, cls=DjangoJSONEncoder))
 
         handler = ViberEventHandler()
-        handler.handle(event)
+        result = handler.handle(event)
+
     except Exception as e:
         logger.exception(e)
         raise
 
-    return HttpResponse(status=HTTPResponseCodes.OK)
+    if result is None:
+        return HttpResponse(status=HTTPResponseCodes.OK)
+
+    return HttpResponse(
+        status=HTTPResponseCodes.OK,
+        content=json.dumps(result),
+        content_type='application/json'
+    )
+
+
+

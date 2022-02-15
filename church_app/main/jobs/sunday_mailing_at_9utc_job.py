@@ -38,7 +38,7 @@ class SundayMailingAt9utcJob(JobBase):
 
             youtube_id = upcoming_live_broadcast_wrapper.get_id()
 
-            if diff_in_hours <= 1:
+            if 0 < diff_in_hours <= 1:
 
                 self._logger.debug(f'Broadcast {youtube_id} will be soon')
 
