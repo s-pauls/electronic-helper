@@ -1,8 +1,7 @@
 import os
 
-from .viber_account_info_wrapper import ViberAccountInfoWrapper
+
 from .viber_client import ViberClient
-from .viber_member_wrapper import ViberMemberWrapper
 from ...models import SubscriberDb
 
 
@@ -20,29 +19,34 @@ class ViberService:
                 self.send_text_message(subscriber.user_id, message_text)
 
     def save_subscriber_into_db(self, user_id: str, user_name: str, user_avatar: str, user_language: str):
-        row = SubscriberDb(
-            user_id=user_id,
-            user_name=user_name,
-            user_avatar=user_avatar,
-            user_language=user_language,
-            subscribed_to='viber-gomelgrace-bot'
-        )
-        row.save()
+
+        # https://docs.djangoproject.com/en/1.8/ref/models/querysets/#update
+        updated_rows_count = SubscriberDb.objects\
+            .filter(user_id=user_id)\
+            .update(user_name=user_name,
+                    user_avatar=user_avatar,
+                    user_language=user_language
+                    )
+
+        if updated_rows_count == 0:
+            row = SubscriberDb(
+                user_id=user_id,
+                user_name=user_name,
+                user_avatar=user_avatar,
+                user_language=user_language,
+                subscribed_to='viber-gomelgrace-bot'
+            )
+            row.save()
 
     def set_subscribed_status(self, user_id: str):
-        row = SubscriberDb.objects.get(user_id=user_id)
-        row.subscription_status = 'subscribed'
-        row.save()
+        SubscriberDb.objects\
+            .filter(user_id=user_id)\
+            .update(subscription_status='subscribed')
 
     def set_unsubscribed_status(self, user_id: str):
-        row = SubscriberDb.objects.get(user_id=user_id)
-        row.subscription_status = 'unsubscribed'
-        row.save()
-
-    def set_subscribed_status(self, user_id: str):
-        row = SubscriberDb.objects.get(user_id=user_id)
-        row.subscription_status = 'subscribed'
-        row.save()
+        SubscriberDb.objects \
+            .filter(user_id=user_id) \
+            .update(subscription_status='unsubscribed')
 
     def get_subscribers_from_db(self) -> [SubscriberDb]:
         rows = SubscriberDb.objects.filter(subscribed_to='viber-gomelgrace-bot', subscription_status='subscribed')
