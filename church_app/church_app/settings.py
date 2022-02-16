@@ -140,7 +140,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)-8s %(asctime)s module:s %(module)s proc: %(process)d thread: %(thread)d\n         %(message)s',
+            'format': '%(levelname)-8s %(asctime)s module: %(module)s proc: %(process)d thread: %(thread)d\n         %(message)s',
             'datefmt': "%d.%b %H:%M:%S"
         },
         'simple': {
