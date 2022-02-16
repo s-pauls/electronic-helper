@@ -4,13 +4,13 @@
 
 ## Локальное разворачивание и запуск
 
-Для работы с проктом нужно:
+Для работы с проектом нужно:
 - Скачать и установить [Python](https://www.python.org/ftp/python/3.7.4/python-3.7.4-amd64.exe) _(на хостинге используется версия 3.6.9)_ 
   - ! во время установки нужно включить галочку Add Python to environment variables !
 - Скачать и установить [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows)
 - Скачать и установить [MySql](https://dev.mysql.com/downloads/file/?id=510039)
   - ! во время установки выбрать опцию Use Legacy Authentication Method (Retain MySQL 5.x Compatibility)
-    (на серевере используется MySQL 5.7)
+    (на сервере используется MySQL 5.7)
   - Создать схему в базе CREATE SCHEMA `church_management` DEFAULT CHARACTER SET utf8 ;
   - Рекомендую использовать DBeaver вместо MySQL Workbanch для просмотра содержимого в базе
 - Создать файл .env в папке church_app со следующим содержимым
@@ -53,7 +53,7 @@ python manage.py runserver
 
 запуск фоновых задач 
 задачи должны быть добавлены в таблице background_task
-для добавдления (инициализации задач нужно вызвать [run_jobs()](church_app/main/tasks.py))
+для добавления (инициализации задач нужно вызвать [run_jobs()](church_app/main/tasks.py))
 ```bash
 python manage.py process_tasks
 ```
@@ -78,7 +78,7 @@ python manage.py startapp main
 Вся логика проекта должна находиться в пакете [core](church_app/main/core)
 
 ### Презентационный уровень проекта
-Проет имеет несколько презентационных уровней
+Проект имеет несколько презентационных уровней
 - Веб-интерфейс [templates](church_app/main/templates)
 - АПИ [api](church_app/main/api)
 - Фоновые процессы [jobs](church_app/main/jobs)
