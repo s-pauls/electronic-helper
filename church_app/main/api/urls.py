@@ -1,8 +1,9 @@
 from django.urls import path
-from . import telegram_hook_controller as telegram
-from . import viber_hook_controller as viber
+from . import web_hook_controller as controller
+
 
 urlpatterns = [
-    path('telegram/message', telegram.message),
-    path('viber/event', viber.viber_event),
+    path('telegram/message', controller.telegram_update),
+    path('viber/event', controller.viber_event),
+    path('notification_forward/push_notification', controller.android_push_notification),
 ]
