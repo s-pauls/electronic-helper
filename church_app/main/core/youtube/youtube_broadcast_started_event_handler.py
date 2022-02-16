@@ -48,9 +48,30 @@ class YouTubeBroadcastStartedEventHandler(HandlerBase):
             self._youtube_service.insert_live_chat_message(
                 youtube=youtube,
                 live_chat_id=broadcast.live_chat_id,
-                message_text='Рады приветствовать Вас. '
-                             'Здорово, что мы будем славить нашего Бога вместе. '
-                             'Приятного просмотра!'
+                message_text='Рады приветствовать Вас! '
+                             'Здорово, что мы будем славить нашего Бога вместе! '
+            )
+
+            self._youtube_service.insert_live_chat_message(
+                youtube=youtube,
+                live_chat_id=broadcast.live_chat_id,
+                message_text='Нам будет приятно получить от Вас отзыв о служении в целом. '
+                             'Конструктивная критика поможет нам сделать наше служение качественнее.  '
+                             'А положительные отзывы прибавляют нам сил и вдохновляют. '
+                             'Если не хватает слов чтобы выразить Ваши ощущения - ставьте лайк! '
+            )
+
+            self._youtube_service.insert_live_chat_message(
+                youtube=youtube,
+                live_chat_id=broadcast.live_chat_id,
+                message_text='Вы можете писать просьбы о поддержке в молитве в этот чат. '
+                             'Ваши просьбы будут записаны в список молитвенных нужд.  '
+            )
+
+            self._youtube_service.insert_live_chat_message(
+                youtube=youtube,
+                live_chat_id=broadcast.live_chat_id,
+                message_text='Приятного просмотра!'
             )
 
 
