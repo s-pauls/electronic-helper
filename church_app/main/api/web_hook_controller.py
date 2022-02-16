@@ -5,6 +5,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .http_response_codes import HTTPResponseCodes
+from ..core.push_notification.push_notification_handler import PushNotificationHandler
 from ..core.telegram.telegram_updates_handler import TelegramUpdatesHandler
 from ..core.viber.viber_event_handler import ViberEventHandler
 
@@ -72,20 +73,20 @@ def android_push_notification(request):
 
     try:
         data = {
-            'name': request.GET.get("name"),
-            'pkg': request.GET.get("pkg"),
-            'title': request.GET.get("title"),
-            'text': request.GET.get("text"),
-            'subtext': request.GET.get("subtext"),
-            'bigtext': request.GET.get("bigtext"),
-            'infotext': request.GET.get("infotext"),
-            'user': request.GET.get("user"),
+            'name': request.GET.get('name'),
+            'pkg': request.GET.get('pkg'),
+            'title': request.GET.get('title'),
+            'text': request.GET.get('text'),
+            'subtext': request.GET.get('subtext'),
+            'bigtext': request.GET.get('bigtext'),
+            'infotext': request.GET.get('infotext'),
+            'user': request.GET.get('user'),
         }
 
         logger.info('notification forward sent message: ' + json.dumps(data, cls=DjangoJSONEncoder))
 
-        handler = TelegramUpdatesHandler()
-        handler.handle()
+        handler = PushNotificationHandler()
+        handler.handle(data)
 
     except Exception as e:
         logger.exception(e)
