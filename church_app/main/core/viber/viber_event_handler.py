@@ -22,6 +22,9 @@ class ViberEventHandler:
             viber_user_wrapper = ViberUserWrapper(viber_event['user'])
             subscribed = bool(viber_event['subscribed'])
 
+            if subscribed:
+                return None
+
             welcome_message_text = \
                 f'Приветствую, {viber_user_wrapper.get_user_name()}!\r\n' \
                 f'Я, Электронный помощник церкви \'Благодать\' (Гомель)\r\n' \
