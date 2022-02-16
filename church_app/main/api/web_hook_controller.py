@@ -68,12 +68,25 @@ def android_push_notification(request):
     if request.method != 'POST':
         return HttpResponse(status=HTTPResponseCodes.FORBIDDEN)
 
-    push_notification = json.loads(request.body.decode('utf-8'))
-
     logger = logging.getLogger(__name__)
 
     try:
-        logger.info('telegram sent message: ' + json.dumps(push_notification, cls=DjangoJSONEncoder))
+        data = {
+            'name': request.GET.get("name"),
+            'pkg': request.GET.get("pkg"),
+            'title': request.GET.get("title"),
+            'text': request.GET.get("text"),
+            'subtext': request.GET.get("subtext"),
+            'bigtext': request.GET.get("bigtext"),
+            'infotext': request.GET.get("infotext"),
+            'user': request.GET.get("user"),
+        }
+
+        logger.info('notification forward sent message: ' + json.dumps(data, cls=DjangoJSONEncoder))
+
+        handler = TelegramUpdatesHandler()
+        handler.handle()
+
     except Exception as e:
         logger.exception(e)
         raise
