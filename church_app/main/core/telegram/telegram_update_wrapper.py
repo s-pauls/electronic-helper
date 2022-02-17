@@ -108,6 +108,9 @@ class TelegramUpdateWrapper:
 
         return ''
 
+    def get_friendly_name(self):
+        return (self.get_first_name() + ' ' + self.get_last_name()).strip()
+
     def get_user_name(self) -> str:
 
         if self.has_message_object():

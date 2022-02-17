@@ -1,3 +1,4 @@
+import logging
 import os
 
 
@@ -6,13 +7,21 @@ from ...models import SubscriberDb
 
 
 class ViberService:
+    def __init__(self):
+        self._logger = logging.getLogger(__name__)
 
     def send_text_message(self, receiver_id: str, message_text: str):
-        viber_client = self._get_viber_client()
-        viber_client.send_text_message(receiver_id, message_text)
+        try:
+            viber_client = self._get_viber_client()
+            viber_client.send_text_message(receiver_id, message_text)
+        except Exception as exception:
+            self._logger.exception(exception)
 
-    def send_text_message_to_all_subscribers(self, message_text: str):
+    def send_text_message_to_subscribers(self, message_text: str, role: str = 'manager'):
         subscribers = self.get_subscribers_from_db()
+
+        if role not in ['all', '*']:
+            subscribers = filter(lambda s: s.user_role == role, subscribers)
 
         if len(subscribers) > 0:
             for subscriber in subscribers:
@@ -34,6 +43,7 @@ class ViberService:
                 user_name=user_name,
                 user_avatar=user_avatar,
                 user_language=user_language,
+                user_role='subscriber',
                 subscribed_to='viber-gomelgrace-bot'
             )
             row.save()

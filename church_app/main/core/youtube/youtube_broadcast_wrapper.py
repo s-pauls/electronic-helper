@@ -2,6 +2,9 @@ from datetime import datetime
 
 from ..utilities import datetime_helper
 
+PRIVACY_STATUS_PUBLIC = 'public'
+PRIVACY_STATUS_UNLISTED = 'unlisted'
+
 
 class YouTubeBroadcastWrapper:
     def __init__(self, broadcast):
@@ -23,3 +26,8 @@ class YouTubeBroadcastWrapper:
     def has_scheduled_start_time(self) -> bool:
         date_str = self._broadcast.get('snippet', {}).get('scheduledStartTime')
         return date_str
+
+    # public
+    # unlisted - доступ по ссылке
+    def get_privacy_status(self) -> str:
+        return self._broadcast.get('status', {}).get('privacyStatus')
