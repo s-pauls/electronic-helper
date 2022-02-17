@@ -16,7 +16,7 @@ class PushNotificationHandler:
             if group_name != 'Благодать (Гомель)':
                 return
 
-            text = data_wrapper.get_text().replace(data_wrapper.get_user_name()).strip()
+            text = data_wrapper.get_text().replace(data_wrapper.get_user_name(), '').strip()
 
             self._prayer_need_service.process_message(
                 sender_name=data_wrapper.get_user_name(),

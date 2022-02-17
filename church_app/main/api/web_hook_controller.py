@@ -73,14 +73,14 @@ def android_push_notification(request):
 
     try:
         data = {
-            'name': request.GET.get('name'),
-            'pkg': request.GET.get('pkg'),
-            'title': request.GET.get('title'),
-            'text': request.GET.get('text'),
-            'subtext': request.GET.get('subtext'),
-            'bigtext': request.GET.get('bigtext'),
-            'infotext': request.GET.get('infotext'),
-            'user': request.GET.get('user'),
+            'name': request.POST.get('name'),
+            'pkg': request.POST.get('pkg'),
+            'title': request.POST.get('title'),
+            'text': request.POST.get('text'),
+            'subtext': request.POST.get('subtext'),
+            'bigtext': request.POST.get('bigtext'),
+            'infotext': request.POST.get('infotext'),
+            'user': request.POST.get('user'),
         }
 
         logger.info('notification forward sent message: ' + json.dumps(data, cls=DjangoJSONEncoder))
