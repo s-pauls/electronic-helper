@@ -24,7 +24,7 @@ class PrayerNeedService:
 
         message_id = update.get_message_id()
         message_text = update.get_message_text()
-        sender_name = update.get_first_name() + " " + update.get_last_name()
+        sender_name = update.get_friendly_name()
 
         if update.get_chat_id() == TELEGRAM_FROM_VIBER_CHAT_ID:
             self._logger.debug(f'Message id: {message_id}. '

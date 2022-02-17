@@ -11,9 +11,9 @@ class YouTubeService:
     # Ответ на запрос https://cf57722.tmweb.ru/helpers/youtube_auth_response.php?code=КОД_ДЛЯ_ТОКЕНА%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/youtube
     # Идем сюда и получаем пару токенов https://cf57722.tmweb.ru/helpers/YouTubeOAuth.html
 
-    def get_active_live_broadcast(self, youtube):
+    def get_active_live_broadcast(self, youtube, part='id,snippet'):
         request = youtube.liveBroadcasts().list(
-            part="id,snippet",
+            part=part,
             broadcastStatus="active",
             broadcastType="all"
         )
@@ -25,10 +25,24 @@ class YouTubeService:
         else:
             return None
 
-    # Возвращает список запланированных трансляций от ближайшей 5 шт. (по умолчанию)
-    def get_upcoming_live_broadcast(self, youtube):
+    def get_live_broadcast_by_id(self, youtube, youtube_id: str, part: str = 'snippet,status'):
         request = youtube.liveBroadcasts().list(
-            part="id,snippet",
+            part=part,
+            id=youtube_id
+        )
+        response = request.execute()
+        items = list(response['items'])
+
+        if len(items) > 0:
+            return items[0]
+        else:
+            return None
+
+    # Возвращает список запланированных трансляций от ближайшей 5 шт. (по умолчанию)
+    def get_upcoming_live_broadcast(self, youtube, part: str = 'id,snippet,status'):
+        request = youtube.liveBroadcasts().list(
+            part=part,
+            maxResults=50,
             broadcastStatus="upcoming",
             broadcastType="event"
         )

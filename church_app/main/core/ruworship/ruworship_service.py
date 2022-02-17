@@ -12,6 +12,6 @@ class RuWorshipService:
             return
 
         notion_service = NotionService()
-        sender_name = update.get_first_name() + " " + update.get_last_name()
+        sender_name = update.get_friendly_name()
         notion_service.send_rw_audio_record(sender_name, update.get_audio_filename(), update.get_audio_performer(),  'telegram')
         

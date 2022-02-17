@@ -30,6 +30,7 @@ class SubscriberDb(models.Model):
     user_language = models.CharField("User Language", max_length=5, blank=True, null=True)
     subscribed_to = models.CharField("Subscribed To", max_length=20)
     subscription_status = models.CharField("Subscription Status", max_length=20, blank=True, null=True)
+    user_role = models.CharField("User Role", max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.user_name
@@ -45,4 +46,5 @@ class SubscriberDb(models.Model):
             models.Index(fields=['user_id']),
             models.Index(fields=['subscribed_to']),
             models.Index(fields=['subscription_status']),
+            models.Index(fields=['user_role']),
         ]
