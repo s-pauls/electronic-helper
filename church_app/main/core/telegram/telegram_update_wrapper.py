@@ -99,7 +99,7 @@ class TelegramUpdateWrapper:
             if sender is None:
                 return ''
 
-            return sender['last_name']
+            return sender.get('last_name', '')
 
         _type = self._get_type()
 
@@ -115,7 +115,7 @@ class TelegramUpdateWrapper:
             if sender is None:
                 return ''
 
-            return sender['username']
+            return sender.get('username', '')
 
         _type = self._get_type()
 
