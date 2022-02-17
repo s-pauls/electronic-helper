@@ -67,5 +67,5 @@ class YouTubeLiveChatMessagesHandler(HandlerBase):
                     youtube=youtube,
                     live_chat_id=live_chat_id,
                     message_text=message_wrapper.get_sender_name() + ', ' +
-                                 'Ваша просьба о молитве записана в нашем журнале молитвенных нужд'
+                                 'Ваша просьба о молитве записана в список молитвенных нужд'
                 )
