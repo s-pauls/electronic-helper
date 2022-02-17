@@ -2,12 +2,14 @@ from .viber_event_wrapper import ViberEventWrapper
 from .viber_service import ViberService
 from .viber_user_wrapper import ViberUserWrapper
 from ..prayer_need.prayer_need_service import PrayerNeedService
+from ..wording.wording_service import WordingService
 
 
 class ViberEventHandler:
     def __init__(self):
         self._viber_service = ViberService()
         self._prayer_need_service = PrayerNeedService()
+        self._wording_service = WordingService()
 
     def handle(self, viber_event):
         event_name = viber_event['event']
@@ -61,12 +63,21 @@ class ViberEventHandler:
             self._viber_service.set_subscribed_status(viber_event_wrapper.get_sender_id())
 
             if viber_event_wrapper.get_message_type() == 'text':
-                self._prayer_need_service.process_message(
+
+                process_result = self._prayer_need_service.process_message(
                     sender_name=viber_event_wrapper.get_sender_name(),
                     message_id=viber_event_wrapper.get_message_token(),
                     message_text=viber_event_wrapper.get_message_text(),
                     message_source='viber'
                 )
+
+                if process_result:
+
+                    self._viber_service.send_text_message(
+                        viber_event_wrapper.get_sender_id(),
+                        self._wording_service.get_your_prayer_need_is_saved_wording(viber_event_wrapper.get_sender_name())
+                    )
+
             return None
 
         # почему-то subscribed не возникает на первом сообщении, хотя первое сообщение означает,

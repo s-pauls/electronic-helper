@@ -6,6 +6,7 @@ from .youtube_service import YouTubeService
 from ..prayer_need.prayer_need_service import PrayerNeedService
 from ..utilities import datetime_helper
 from ..utilities.handler_base import HandlerBase
+from ..wording.wording_service import WordingService
 
 """
 В этот обработчик приходят паки сообщений.
@@ -20,6 +21,7 @@ class YouTubeLiveChatMessagesHandler(HandlerBase):
         super().__init__(self.__class__.__name__.__str__())
         self._logger = logging.getLogger(__name__)
         self._youtube_service = YouTubeService()
+        self._wording_service = WordingService()
 
     def execute(self, parameters):
         youtube_id = parameters.get('youtube_id')
@@ -66,6 +68,5 @@ class YouTubeLiveChatMessagesHandler(HandlerBase):
                 self._youtube_service.insert_live_chat_message(
                     youtube=youtube,
                     live_chat_id=live_chat_id,
-                    message_text=message_wrapper.get_sender_name() + ', ' +
-                                 'Ваша просьба о молитве записана в список молитвенных нужд'
+                    message_text=self._wording_service.get_your_prayer_need_is_saved_wording(message_wrapper.get_sender_name())
                 )

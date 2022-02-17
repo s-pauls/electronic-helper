@@ -28,3 +28,6 @@ class WordingService:
             .replace('{TIME}', dt.strftime('%H:%M'))
 
         return message_text
+
+    def get_your_prayer_need_is_saved_wording(self, need_owner_name: str):
+        return f'{need_owner_name}, Ваша просьба о молитве записана в список молитвенных нужд.'
