@@ -14,9 +14,6 @@ class PushNotificationDataWrapper:
     def get_text(self) -> str:
         return self._data.get('text')
 
-    def get_user_name(self) -> str:
-        return self._data.get('user')
-
     def get_subtext(self) -> str:
         return self._data.get('subtext')
 

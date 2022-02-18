@@ -16,10 +16,10 @@ class PushNotificationHandler:
             if group_name != 'Благодать (Гомель)':
                 return
 
-            text = data_wrapper.get_text().replace(data_wrapper.get_user_name(), '').strip()
+            text = data_wrapper.get_text()
 
             self._prayer_need_service.process_message(
-                sender_name=data_wrapper.get_user_name(),
+                sender_name=group_name,
                 message_id='-',
                 message_text=text,
                 message_source='viber'

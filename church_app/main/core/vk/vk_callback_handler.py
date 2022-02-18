@@ -2,6 +2,7 @@ class VkCallbackHandler:
     def __init__(self):
         pass
 
+    # https://dev.vk.com/api/community-events/json-schema
     def handle(self, data):
         object_type = data.get('type')
         group_id = data.get('group_id')
