@@ -120,6 +120,15 @@ def vk_callback(request):
     if result is None:
         return HttpResponse(status=HTTPResponseCodes.OK)
 
+    object_type = result.get('type')
+
+    if object_type and object_type == 'confirmation':
+        return HttpResponse(
+            status=HTTPResponseCodes.OK,
+            content=result.get('answer')
+
+        )
+
     return HttpResponse(
         status=HTTPResponseCodes.OK,
         content=json.dumps(result),
