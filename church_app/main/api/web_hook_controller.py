@@ -8,6 +8,7 @@ from .http_response_codes import HTTPResponseCodes
 from ..core.push_notification.push_notification_handler import PushNotificationHandler
 from ..core.telegram.telegram_updates_handler import TelegramUpdatesHandler
 from ..core.viber.viber_event_handler import ViberEventHandler
+from ..core.vk.vk_callback_handler import VkCallbackHandler
 
 
 # Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
@@ -86,6 +87,28 @@ def android_push_notification(request):
         logger.info('notification forward sent message: ' + json.dumps(data, cls=DjangoJSONEncoder))
 
         handler = PushNotificationHandler()
+        handler.handle(data)
+
+    except Exception as e:
+        logger.exception(e)
+        raise
+
+    return HttpResponse(status=HTTPResponseCodes.OK)
+
+
+@csrf_exempt
+def vk_callback(request):
+    if request.method != 'POST':
+        return HttpResponse(status=HTTPResponseCodes.FORBIDDEN)
+
+    logger = logging.getLogger(__name__)
+
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+
+        logger.info('vk sent message: ' + json.dumps(data, cls=DjangoJSONEncoder))
+
+        handler = VkCallbackHandler()
         handler.handle(data)
 
     except Exception as e:
