@@ -18,12 +18,15 @@ class WordingService:
         # todo Добавить формулировки для рождественского и пасхального служений
         # if 'Рождеств' in title:
         else:
-            message_text = 'Трансляция в {TIME}:\r\n' \
+            message_text = '{TITLE}\r\n' \
+                           '\r\n' \
+                           'Трансляция в {TIME}:\r\n' \
                            'https://youtu.be/{YOUTUBE_ID}'
 
         dt = datetime_helper.add_minsk_time_zone(scheduled_start_time)
 
         message_text = message_text\
+            .replace('{TITLE}', title)\
             .replace('{YOUTUBE_ID}', youtube_id)\
             .replace('{TIME}', dt.strftime('%H:%M'))
 

@@ -21,7 +21,7 @@ class ViberService:
         subscribers = self.get_subscribers_from_db()
 
         if role not in ['all', '*']:
-            subscribers = filter(lambda s: s.user_role == role, subscribers)
+            subscribers = list(filter(lambda s: s.user_role == role, subscribers))
 
         if len(subscribers) > 0:
             for subscriber in subscribers:
