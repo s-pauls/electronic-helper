@@ -109,10 +109,19 @@ def vk_callback(request):
         logger.info('vk sent message: ' + json.dumps(data, cls=DjangoJSONEncoder))
 
         handler = VkCallbackHandler()
-        handler.handle(data)
+        result = handler.handle(data)
 
     except Exception as e:
         logger.exception(e)
         raise
 
-    return HttpResponse(status=HTTPResponseCodes.OK)
+    print(result)
+
+    if result is None:
+        return HttpResponse(status=HTTPResponseCodes.OK)
+
+    return HttpResponse(
+        status=HTTPResponseCodes.OK,
+        content=json.dumps(result),
+        content_type='application/json'
+    )

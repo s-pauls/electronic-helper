@@ -6,10 +6,12 @@ class VkCallbackHandler:
         object_type = data.get('type')
         group_id = data.get('group_id')
 
-        if object_type == 'confirmation' and group_id == '210765956':
+        if object_type == 'confirmation' and group_id == 210765956:
             return 'c8b900bc'
 
         # ruworship group
-        if object_type == 'confirmation' and group_id == '210773307':
-            secret_key = 'rLx=BKkMxb/Wn"*fiN7j'
+        if object_type == 'confirmation' and group_id == 210773307:
+            secret_key = 'i3nFFNo9OkEZ1oU7uzbH'
             return '2ae608ab'
+
+        return None
