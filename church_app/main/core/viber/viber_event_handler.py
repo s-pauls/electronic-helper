@@ -68,7 +68,7 @@ class ViberEventHandler:
                     sender_name=viber_event_wrapper.get_sender_name(),
                     message_id=viber_event_wrapper.get_message_token(),
                     message_text=viber_event_wrapper.get_message_text(),
-                    message_source='viber'
+                    message_source='viber-bot'
                 )
 
                 if process_result:

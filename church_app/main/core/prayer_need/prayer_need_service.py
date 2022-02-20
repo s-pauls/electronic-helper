@@ -40,12 +40,12 @@ class PrayerNeedService:
             sender_name = parser.get_sender_name()
             message_text = parser.get_message_text()
 
-            self.process_message(sender_name, message_id, message_text, 'viber')
+            self.process_message(sender_name, str(message_id), message_text, 'viber')
 
         else:
-            self.process_message(sender_name, message_id, message_text, 'telegram')
+            self.process_message(sender_name, str(message_id), message_text, 'telegram')
 
-    def process_message(self, sender_name: str, message_id: int, message_text: str, message_source: str) -> bool:
+    def process_message(self, sender_name: str, message_id: str, message_text: str, message_source: str) -> bool:
 
         analyzer = PrayerNeedsTextAnalyzer(message_text)
 
