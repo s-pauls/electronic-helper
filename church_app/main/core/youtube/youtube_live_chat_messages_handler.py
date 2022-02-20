@@ -59,14 +59,18 @@ class YouTubeLiveChatMessagesHandler(HandlerBase):
 
             sent = prayer_nees_service.process_message(
                 sender_name=message_wrapper.get_sender_name(),
+                message_id=message_wrapper.get_message_id(),
                 message_text=message_wrapper.get_message_text(),
                 message_source='youtube'
             )
 
             if sent:
                 youtube = YouTubeResourceComposer().compose()
+                sender_name = message_wrapper.get_sender_name()
+                message_text = self._wording_service.get_your_prayer_need_is_saved_wording(sender_name)
+
                 self._youtube_service.insert_live_chat_message(
                     youtube=youtube,
                     live_chat_id=live_chat_id,
-                    message_text=self._wording_service.get_your_prayer_need_is_saved_wording(message_wrapper.get_sender_name())
+                    message_text=message_text
                 )
