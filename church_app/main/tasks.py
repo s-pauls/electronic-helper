@@ -44,7 +44,6 @@ def run_jobs():
         )
 
 
-
 @background(schedule=5)
 def run_each_minute_jobs(parameters):
     youtube_active_broadcast_job = YouTubeActiveBroadcastJob()

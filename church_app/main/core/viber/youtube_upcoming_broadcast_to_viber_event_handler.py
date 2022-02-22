@@ -13,8 +13,14 @@ from ..utilities.handler_base import HandlerBase
 # https://django-background-tasks.readthedocs.io/en/latest/#creating-and-registering-tasks
 @background(schedule=60)
 def run_upcoming_broadcast_mailing_to_viber(parameters):
-    handler = YouTubeUpcomingBroadcastToViberEventHandler()
-    handler.handle(parameters)
+    try:
+        handler = YouTubeUpcomingBroadcastToViberEventHandler()
+        handler.handle(parameters)
+    except Exception:
+        # Exception was logged in HandlerBase
+        # Если случается ошибка нам ненужно повторно выполнять эту задачу во избежания повторной рассылки!
+        pass
+
 
 
 """

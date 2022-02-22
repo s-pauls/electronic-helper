@@ -12,8 +12,13 @@ from ..utilities import datetime_helper
 # https://django-background-tasks.readthedocs.io/en/latest/#creating-and-registering-tasks
 @background(schedule=60)
 def run_delayed_broadcast_ended(youtube_id: str):
-    handler = YouTubeBroadcastEndedEventHandler()
-    handler.handle(youtube_id)
+    try:
+        handler = YouTubeBroadcastEndedEventHandler()
+        handler.handle(youtube_id)
+    except Exception:
+        # Exception was logged in HandlerBase
+        # Если случается ошибка нам ненужно повторно выполнять эту задачу во избежания повторной рассылки!
+        pass
 
 
 """

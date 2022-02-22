@@ -14,8 +14,13 @@ from ..utilities.handler_base import HandlerBase
 
 @background(schedule=60)
 def run_delayed_broadcast_started(youtube_id: str):
-    handler = YouTubeBroadcastStartedEventHandler()
-    handler.handle(youtube_id)
+    try:
+        handler = YouTubeBroadcastStartedEventHandler()
+        handler.handle(youtube_id)
+    except Exception:
+        # Exception was logged in HandlerBase
+        # Если случается ошибка нам ненужно повторно выполнять эту задачу во избежания повторной рассылки!
+        pass
 
 
 """
